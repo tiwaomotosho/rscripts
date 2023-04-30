@@ -12,7 +12,7 @@ df1 <- df1[-1, ] %>%
     mutate(DateAdded = as.Date(DateAdded, format = "%d/%m/%Y"))
 
 
-df2 <- read.csv("MaturityType.csv", header = FALSE,  sep = ",")
+df2 <- read.csv("MaturityType.csv", header = FALSE, sep = ",")
 names(df2) <- str_replace_all(df2[1, ], " ", "")
 df2 <- df2[-1, ]
 
@@ -53,3 +53,29 @@ df1_unique$ImdbScore <- gsub("/10", "", df1_unique$ImdbScore)
 df1_unique$ImdbScore <- as.numeric(df1_unique$ImdbScore)
 
 str(df1_unique) # display new analysis
+
+# Question 1.3
+# For a non-empty result, we perform exploratory analysis on Dataframe
+# First, we filter "TV Show for Mature Audiences"
+# Then Rating (Maturity Type) is "TV-MA"
+# Then, Group by counting ProductionCountry and ReleaseDate
+# Then arrange count in descending order
+
+df1_grouped <- subset(
+    df1_unique,
+    Rating == "TV-MA"
+) %>%
+    group_by(ProductionCountry, ReleaseDate) %>%
+    summarize(count = n()) %>%
+    arrange(desc(count))
+
+print(dplyr::as_tibble(df1_grouped))
+
+# Finding the TV Shows from United States in 2019
+df1_filtered <- subset(
+    df1_unique,
+    Rating == "TV-MA" &
+        ProductionCountry == "United States" &
+        ReleaseDate == "2019"
+)
+print(dplyr::as_tibble(df1_filtered))

@@ -29,5 +29,27 @@ print(dplyr::as_tibble(df2))
 
 
 # Question 1.2
-dup_rows <- duplicated(df1)
-print(dplyr::as_tibble(dup_rows))
+
+# display number of duplicated rows
+cat("Number of duplicated rows:", sum(duplicated(df1$ShowId)), "\n")
+
+# display duplicated rows
+duplicated_rows <- df1[duplicated(df1) | duplicated(df1, fromLast = TRUE), ]
+print(dplyr::as_tibble(duplicated_rows))
+
+# display number of rows before and after removing duplicates
+cat("Number of rows before removing duplicates:", nrow(df1), "\n")
+
+# remove duplicated rows and assign back to df
+df1_unique <- unique(df1)
+
+# display number of rows before and after removing duplicates
+cat("Number of rows after removing duplicates:", nrow(df1_unique), "\n")
+
+# Replace text in a specific column
+df1_unique$ImdbScore <- gsub("/10", "", df1_unique$ImdbScore)
+
+# Convert to numeric values
+df1_unique$ImdbScore <- as.numeric(df1_unique$ImdbScore)
+
+str(df1_unique) # display new analysis

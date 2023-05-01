@@ -86,9 +86,24 @@ print(dplyr::as_tibble(df1_filtered))
 # df_14 means dataframe for 1.4
 
 df_14 <- df1_unique %>%
-  filter(grepl("teen", Description) & grepl("high school", Description)) %>%
-  select(Title, ReleaseDate, ImdbScore) %>%
-  arrange(ReleaseDate, desc(ImdbScore))
+    filter(grepl("teen", Description) & grepl("high school", Description)) %>%
+    select(Title, ReleaseDate, ImdbScore) %>%
+    arrange(ReleaseDate, desc(ImdbScore))
 
 # Print the first 5 rows
 print(dplyr::as_tibble(head(df_14, 5)))
+
+
+# Question 1.5
+# Filter for TV-G -"TV Show Suitable for General Audiences"
+# Group by counting number of shows and average IMDB Score
+
+df1_15 <- subset(
+    df1_unique,
+    Rating == "TV-G"
+) %>%
+    group_by(ProductionCountry) %>%
+    summarize(count = n(), avgImdb = mean(ImdbScore)) %>%
+    arrange(desc(count))
+
+print(dplyr::as_tibble(head(df1_15, 3)))

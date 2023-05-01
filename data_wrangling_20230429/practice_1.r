@@ -127,17 +127,50 @@ ggplot(df_16, aes(
     x = ProductionCountry,
     y = ImdbScore, fill = ProductionCountry
 )) +
-    geom_boxplot() +
-    scale_fill_manual(values = c("orange", "lightblue")) +
     stat_summary(fun.data = function(x) {
         r <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
-        names(r) <- c("ymin", "lower", "middle", "upper", "ymax")
+        r <- c(r, mean(x))
+        names(r) <- c("ymin", "lower", "middle", "upper", "ymax", "mean")
         r
     }, geom = "errorbar", width = 0.4) +
+    geom_boxplot() +
+    stat_summary(
+        fun.y = "mean", geom = "text",
+        aes(label = paste0("Mean: ", round(..y.., 2))),
+        position = position_dodge(width = 0.75), vjust = 0, size = 3
+    ) +
     theme_minimal() +
     ggtitle("Boxplot of Production Country vs IMDB Score") +
     xlab("Production Country") +
     ylab("IMDB Score")
 
 
+# Calculate summary statistics
+stats <- df_16 %>%
+    group_by(ProductionCountry) %>%
+    summarise(
+        pmin = quantile(ImdbScore, 0),
+        p25 = quantile(ImdbScore, 0.25),
+        mean = mean(ImdbScore),
+        median = median(ImdbScore),
+        p75 = quantile(ImdbScore, 0.75),
+        pmax = quantile(ImdbScore, 1)
+    )
+
+print(stats)
+
 # Question 1.7
+# Justifications
+# 1 Children moving should use rating "TV-Y" and contain "child" in description
+# It is safe in case the parents are not available for guidance
+# 2 Movies should be based on IMDB Score in descending order
+
+df_17 <- subset(
+    df1_unique,
+    Rating == "TV-Y"
+) %>%
+    filter(grepl("child", Description)) %>%
+    select(Title, ReleaseDate, ImdbScore) %>%
+    arrange(desc(ImdbScore))
+
+print(dplyr::as_tibble(head(df_17, 5)))

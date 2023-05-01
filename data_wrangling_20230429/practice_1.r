@@ -79,3 +79,16 @@ df1_filtered <- subset(
         ReleaseDate == "2019"
 )
 print(dplyr::as_tibble(df1_filtered))
+
+# Question 1.4
+# Pattern matching based on conditions
+# Then, sorting based on conditions
+# df_14 means dataframe for 1.4
+
+df_14 <- df1_unique %>%
+  filter(grepl("teen", Description) & grepl("high school", Description)) %>%
+  select(Title, ReleaseDate, ImdbScore) %>%
+  arrange(ReleaseDate, desc(ImdbScore))
+
+# Print the first 5 rows
+print(dplyr::as_tibble(head(df_14, 5)))

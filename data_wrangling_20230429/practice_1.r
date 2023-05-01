@@ -107,3 +107,37 @@ df1_15 <- subset(
     arrange(desc(count))
 
 print(dplyr::as_tibble(head(df1_15, 3)))
+
+# Question 1.6
+# Drawing a Boxplot for ImdbScore
+# ReleasedDate > 2010 and
+# Production Country - "United States" and "Canada"
+
+df_16 <- subset(
+    df1_unique,
+    ReleaseDate > "2010" &
+        (ProductionCountry == "United States" | ProductionCountry == "Canada")
+) %>%
+    select(ProductionCountry, ReleaseDate, ImdbScore)
+
+# print(dplyr::as_tibble(df_16))
+
+# Create the boxplot using ggplot2
+ggplot(df_16, aes(
+    x = ProductionCountry,
+    y = ImdbScore, fill = ProductionCountry
+)) +
+    geom_boxplot() +
+    scale_fill_manual(values = c("orange", "lightblue")) +
+    stat_summary(fun.data = function(x) {
+        r <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
+        names(r) <- c("ymin", "lower", "middle", "upper", "ymax")
+        r
+    }, geom = "errorbar", width = 0.4) +
+    theme_minimal() +
+    ggtitle("Boxplot of Production Country vs IMDB Score") +
+    xlab("Production Country") +
+    ylab("IMDB Score")
+
+
+# Question 1.7

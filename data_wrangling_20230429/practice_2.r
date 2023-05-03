@@ -65,3 +65,14 @@ cat(
     "Number of distinct Years: ",
     df1_long %>% distinct(Year) %>% nrow(), "\n"
 )
+
+# Question 2.3
+df1_grouped <- subset(
+    df1_long,
+    Year == 2021
+) %>%
+    group_by(ProductionCountry) %>%
+    summarize(avgScore = mean(Score)) %>%
+    filter(avgScore >= 6.8 & avgScore <= 7.0)
+
+print(df1_grouped)

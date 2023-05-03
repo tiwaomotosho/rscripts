@@ -76,3 +76,19 @@ df1_grouped <- subset(
     filter(avgScore >= 6.8 & avgScore <= 7.0)
 
 print(df1_grouped)
+
+# Question 2.4
+df2 <- read_excel("Production.xlsx", sheet = "Continent")
+names(df2) <- c("Country", "Continent")
+df2 <- df2[-c(1, 2), ]
+print(df2)
+cat(
+    "Number of distinct Countries: ",
+    length(unique(df2$Country)), "\n"
+)
+cat(
+    "Number of Countries not in Data WOrksheet: ",
+    length(unique(setdiff(df2$Country, df1_long$ProductionCountry))), "\n"
+)
+
+# Question 2.5

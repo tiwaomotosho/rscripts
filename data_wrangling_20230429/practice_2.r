@@ -87,8 +87,47 @@ cat(
     length(unique(df2$Country)), "\n"
 )
 cat(
-    "Number of Countries not in Data WOrksheet: ",
+    "Number of Countries not in Data Worksheet: ",
     length(unique(setdiff(df2$Country, df1_long$ProductionCountry))), "\n"
 )
 
 # Question 2.5
+# Justification
+
+# Part a
+# Finding the yearly weighted average rating
+#
+
+# Part b
+df1_asian <- df1_long %>%
+    left_join(df2, by = c("ProductionCountry" = "Country")) %>%
+    filter(Continent == "Asia") %>%
+    group_by(ProductionCountry, Year) %>%
+    summarize(
+        sumAnnualRating = sum(NumProducts * Score)
+    ) %>%
+    group_by(ProductionCountry) %>%
+    summarize(
+        avgAnnualRating = mean(sumAnnualRating)
+    ) %>%
+    arrange(desc(avgAnnualRating)) %>%
+    slice(1:5)
+
+print(df1_asian)
+
+# part c
+# Create the bar chart with data labels
+ggplot(df1_asian, aes(
+    x = reorder(ProductionCountry, -avgAnnualRating), y = avgAnnualRating
+)) +
+    geom_col(color = "skyblue", fill = "steelblue") +
+    scale_fill_brewer(palette = "Set3") +
+    theme_minimal() +
+    labs(
+        title = "Comparison of Countries by Yearly Weighted Average Score",
+        x = "Production Country",
+        y = "Yearly Weighted Average Score"
+    ) +
+    geom_text(aes(label = avgAnnualRating), vjust = -0.1)
+
+# part d
